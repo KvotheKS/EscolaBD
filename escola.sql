@@ -105,11 +105,11 @@ INSERT INTO ProfessorDisciplina VALUES(303, 4);
 INSERT INTO ProfessorDisciplina VALUES(404, 2);
 INSERT INTO ProfessorDisciplina VALUES(202, 5);
 
-INSERT INTO AtividadeExtracurricular VALUES(10, "Clube de Esporte", "14:00:00", 5, 505);
-INSERT INTO AtividadeExtracurricular VALUES(20, "Clube de Esporte", "18:00:00", 5, 505);
-INSERT INTO AtividadeExtracurricular VALUES(30, "Clube de Teatro", "18:00:00", 4, 202);
-INSERT INTO AtividadeExtracurricular VALUES(40, "Línguas Estrangeiras", "15:00:00", 2, 404);
-INSERT INTO AtividadeExtracurricular VALUES(50, "Revisão para Vestibular", "15:00:00", 1, 101);
+INSERT INTO AtividadeExtracurricular VALUES(10, "Clube de Esporte", "14:00", 5, 505);
+INSERT INTO AtividadeExtracurricular VALUES(20, "Clube de Esporte", "18:00", 5, 505);
+INSERT INTO AtividadeExtracurricular VALUES(30, "Clube de Teatro", "18:00", 4, 202);
+INSERT INTO AtividadeExtracurricular VALUES(40, "Línguas Estrangeiras", "15:00", 2, 404);
+INSERT INTO AtividadeExtracurricular VALUES(50, "Revisão para Vestibular", "15:00", 1, 101);
 
 INSERT INTO Turma VALUES(1, "Matutino", 1);
 INSERT INTO Turma VALUES(2, "Vespertino", 1);
