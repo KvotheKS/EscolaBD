@@ -71,7 +71,7 @@ INSERT INTO Local_ VALUES(5, "Quadra", "externa");
 
 INSERT INTO Departamento VALUES(1, "Exatas");
 INSERT INTO Departamento VALUES(5, "Ciências Naturais");
-INSERT INTO Departamento VALUES(3, "Artes", 2800.00);
+INSERT INTO Departamento VALUES(3, "Artes");
 INSERT INTO Departamento VALUES(4, "Ciências Humanas");
 INSERT INTO Departamento VALUES(2, "Linguagens");
 
@@ -96,8 +96,8 @@ INSERT INTO Telefone VALUES("93505-9256", "555.666.777-88");
 INSERT INTO Professor VALUES(101, "Jussara Alencar Alves", 2500.00, "2020-07-12", "1980-05-30", "Matemática - Licenciatura", "", 1);
 INSERT INTO Professor VALUES(202, "Emerson Nascimento Ferreira", 3000.00, "2008-02-18", "1970-03-01", "Artes Cênicas", "", 3);
 INSERT INTO Professor VALUES(303, "Rodrigo Perreira Santos", 2800.00, "2012-10-24", "1975-11-27", "História - Licenciatura", "", 4);
-INSERT INTO Professor VALUES(404, "Bruno Alves Lima", 2800.00, "2012-04-10", "1982-03-15", "Literatura - Licenciatura", "", 5);
-INSERT INTO Professor VALUES(505, "Vanessa Silva Castro", 2500.00, "2021-05-11", "1985-09-20", "Educação Física", "", 2);
+INSERT INTO Professor VALUES(404, "Bruno Alves Lima", 2800.00, "2012-04-10", "1982-03-15", "Literatura - Licenciatura", "", 2);
+INSERT INTO Professor VALUES(505, "Vanessa Silva Castro", 2500.00, "2021-05-11", "1985-09-20", "Educação Física", "", 4);
 
 INSERT INTO ProfessorDisciplina VALUES(101, 1);
 INSERT INTO ProfessorDisciplina VALUES(101, 3);
@@ -141,11 +141,11 @@ INSERT INTO Itens VALUES("Bola", 10, "de Basquete", NULL, 5);
 INSERT INTO Itens VALUES("Balança", 5, NULL, NULL, 3);
 INSERT INTO Itens VALUES("Quadro", 1, "Negro", NULL, 1);
 
-INSERT INTO Despesas VALUES(11, "Luz", 500.00, "2021-10-29", 1);
-INSERT INTO Despesas VALUES(22, "Manutenção de Salas", 250.00, "2021-10-12", 1);
-INSERT INTO Despesas VALUES(33, "Água", 340.00, "2021-09-29", 1);
-INSERT INTO Despesas VALUES(44, "Obras", 480.00, "2021-09-05", 1);
-INSERT INTO Despesas VALUES(55, "Novos Recursos", 600.00, "2021-10-08", 1);
+INSERT INTO Despesas VALUES(11, "Luz", 500.00, "2021-10-29", 4);
+INSERT INTO Despesas VALUES(22, "Manutenção de Salas", 250.00, "2021-10-12", 4);
+INSERT INTO Despesas VALUES(33, "Água", 340.00, "2021-09-29", 4);
+INSERT INTO Despesas VALUES(44, "Obras", 480.00, "2021-09-05", 4);
+INSERT INTO Despesas VALUES(55, "Novos Recursos", 600.00, "2021-09-08", 4);
 
 INSERT INTO ProfessorTurma VALUES(101, 1);
 INSERT INTO ProfessorTurma VALUES(202, 2);
@@ -164,3 +164,58 @@ INSERT INTO Notas VALUES(2, 10.0, 7.0, 9.0, 9.9, 111, 1);
 INSERT INTO Notas VALUES(1, 8.5, 9.5, 9.5, 8.5, 222, 3);
 INSERT INTO Notas VALUES(2, 10.0, 9.5, 9.0, 9.5, 222, 4);
 INSERT INTO Notas VALUES(1, 10.0, 10.0, 10.0, 10.0, 333, 2);
+
+CREATE VIEW Media_Notas AS
+SELECT E.Nome as Aluno, D.Nome as Disciplina, Bimestre, ROUND((Prova + Teste + Projeto + Atividades)/4, 2) as MediaNotas
+FROM Estudante as E, Disciplina as D, Notas as N
+WHERE DisciplinaCodigo = Codigo and EstudanteMatricula = Matricula;
+
+SELECT * FROM Media_Notas;
+
+CREATE VIEW Salario_Total AS
+SELECT D.Codigo as Depto, ROUND(SUM(P.Salario), 2) as Salario_Custo
+FROM Departamento as D, Professor as P
+WHERE Codigo =  DepartamentoCodigo
+GROUP BY DepartamentoCodigo;
+
+SELECT * FROM Salario_Total;
+
+DELIMITER ||
+
+CREATE PROCEDURE AumentoSalarial (IN CodDept INT)
+BEGIN
+	DECLARE GastoSalario FLOAT;
+    DECLARE DespesasAtuais FLOAT;
+    DECLARE DespesasPassadas FLOAT;
+    DECLARE Percentual FLOAT;
+    
+    SELECT Salario_Custo INTO GastoSalario
+    FROM Salario_Total
+    WHERE Depto = CodDept;
+    
+    SELECT SUM(Valor) INTO DespesasAtuais
+    From Departamento, Despesas
+    WHERE Codigo = CodDept AND EXTRACT(YEAR_MONTH FROM Data_) = EXTRACT(YEAR_MONTH FROM CURRENT_DATE());
+    
+    SELECT SUM(Valor) INTO DespesasPassadas
+    FROM Departamento, Despesas
+    WHERE Codigo = CodDept AND EXTRACT(YEAR_MONTH FROM Data_) = EXTRACT(YEAR_MONTH FROM DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH));
+    
+    SELECT GastoSalario + DespesasAtuais INTO DespesasAtuais;
+    SELECT GastoSalario + DespesasPassadas INTO DespesasPassadas;
+    SELECT DespesasAtuais / DespesasPassadas INTO Percentual;
+    
+    IF Percentual < 1 THEN
+		UPDATE Professor
+        SET Salario = Salario + Salario*0.2
+        WHERE DepartamentoCodigo = CodDept;
+	END IF;
+END ||
+
+DELIMITER ;
+
+SELECT * FROM Professor;
+
+CALL AumentoSalarial(4);
+
+SELECT * FROM Professor;
