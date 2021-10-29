@@ -61,7 +61,7 @@ def UPDATE(table, columns, values, pkval):
 			strcvs += columns[i] + ' = %s,'
 		else:
 			strcvs += columns[i] + f' = {sdw},'
-	print(f'UPDATE {table} SET {strcvs[:-1]} WHERE {getTablePK(table)} = {pkval}', tuple(vals))
+	#print(f'UPDATE {table} SET {strcvs[:-1]} WHERE {getTablePK(table)} = {pkval}', tuple(vals))
 	dbcur.execute(f'UPDATE {table} SET {strcvs[:-1]} WHERE {getTablePK(table)} = {pkval}', tuple(vals))
 	database.commit()
 
@@ -80,6 +80,7 @@ def sandwich(name, typ):
 		return f'{name}'
 
 def getRegistries(table, column='', value=''):
+	print(table,column,value)
 	if(column != ''):
 		dbcur.execute(SELECTALLW(table, f'{column} = {sandwich(value,getColumnType(table,column))}'))
 	else:
@@ -88,6 +89,7 @@ def getRegistries(table, column='', value=''):
 
 def getRegistry(table, column='', value=''):
 	table = table.replace(table[0], table[0].upper())
+
 	if(column != ''):
 		dbcur.execute(SELECTALLW(table, f'{column} = {sandwich(value,getColumnType(table,column))}'))
 	else:
@@ -164,7 +166,7 @@ def getColumnInfo(table, column):
 def getColumnType(table,column):
 	table = curateTable(table)
 	dbcur.execute(f'SHOW FIELDS FROM {table} WHERE Field = "{column}"')
-	print(table, column)
+	
 	return dbcur.fetchone()[1].decode('ascii')
 
 def getTypeColumn(table, typ):
@@ -204,7 +206,7 @@ def validateNM(FK,fk,table, pkval=''):
 			fkinfo = getTableInfo(getTablebyFK(FK))[0][1] # so a informacao da FK
 			pkinfo = getTableInfo(table)[0][1]
 			tbl = getTableLike(table + pk,FK) # procura a tabela nXm
-			#print(tbl, FK, fk, fkinfo, table+pk, pkval, pkinfo)
+			print(tbl, FK, fk, fkinfo, table+pk, pkval, pkinfo)
 			if(tbl != None):
 				dbcur.execute(SELECTALLW(tbl,f'{FK} = {sandwich(fk,fkinfo)} and {table+pk} = {sandwich(pkval,pkinfo)}')) # registro na tabela nxm PT.getRegistry(tbl, table + pk, pkval))
 				mreg = dbcur.fetchone()
@@ -229,7 +231,8 @@ def validatePK(table, name):
 		return f'Identificador vazio'
 	pk = getTablePK(table)
 	typ = getColumnType(table,pk)
-	exists = dbcur.execute(SELECTALLW(table, f'{pk} = {sandwich(name,typ)}'))
+	dbcur.execute(SELECTALLW(table, f'{pk} = {sandwich(name,typ)}'))
+	exists = dbcur.fetchone()
 	if(exists != None):
 		return f'Elemento com mesmo identificador ja existe'
 
@@ -316,6 +319,7 @@ def selectColumnPair(table):
 
 def selectColumnsInRow(table, reg):
 	table = curateTable(table)
+	print(table)
 	columns = [getTablePK(table), interfaceBD(table)]
 	values = []
 	tblinfo = getTableInfo(table)
@@ -323,7 +327,7 @@ def selectColumnsInRow(table, reg):
 		columns = columns[:-1]
 	for i in range(len(columns)):
 		for z in range(len(tblinfo)):
-			print(columns[i],tblinfo[z][0])
+			#print(columns[i],tblinfo[z][0])
 			if(columns[i]==tblinfo[z][0]):
 				values.append(reg[z])
 	return values
@@ -392,7 +396,7 @@ def insertNM(table,pk,FK, fk): # tabela, valor pk, fk, fk val
 
 	fk = fk.split('(')[-1].replace(')','') # faz uma limpa, caso o formato da fk seja: blabla (fk)
 	tbl = getTableLike(table + getTablePK(table), FK)
-	print(tbl, table, pk, FK , fk)
+	#print(tbl, table, pk, FK , fk)
 	columns = []
 	values = []
 
@@ -403,7 +407,7 @@ def insertNM(table,pk,FK, fk): # tabela, valor pk, fk, fk val
 		else:
 			columns.append(table + getTablePK(table))
 			values.append(pk)
-	print(tbl,columns, values)
+	#print(tbl,columns, values)
 	INSERT(tbl,columns,values)
 
 def isNM(table, fk):

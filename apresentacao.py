@@ -13,8 +13,10 @@ def trim(name):
 def unitoascii(name):
 	dct = {
 		'á':'a',
+		'ã':'a',
 		'é':'e',
 		'í':'i',
+		'ó':'o',
 		'ç':'c'
 	}
 	for i in dct.keys():
@@ -111,7 +113,7 @@ class Application(QtWidgets.QMainWindow):
 		relation = PT.getTablePK(name) # pk da tabela. todas as fks estao no modelo Tabela_PKTabela ex : Local__Codigo
 		fk = name + relation
 		self.scrolls[fk] = scroll
-		print(fk)
+		#print(fk)
 		self.initScroll(name,fk)
 
 	def insWidget(self, element):
@@ -122,13 +124,13 @@ class Application(QtWidgets.QMainWindow):
 			self.rbttMasculino.toggled.connect(self.setSexo)
 			self.sexo = True
 		elif('MUL' not in element[2]):
-			print(element[0])
+			#print(element[0])
 			self.entries[element[0]] = self.findChild(QtWidgets.QLineEdit, 'line' + element[0])
 
 	def setSexo(self):
 		rbtt = self.sender()
 		if(rbtt.isChecked()):
-			print(self.sexo)
+			#print(self.sexo)
 			self.sexo = rbtt.text()
 
 	def validateInsert(self):
@@ -314,7 +316,9 @@ class Application(QtWidgets.QMainWindow):
 				continue
 			pkval = self.scrolls[PT.getTablePK(self.selectedtable)].currentText()
 			pkval = pkval.split('(')[-1].replace(')','')
-			temp = PT.validateNM(i,self.scrolls[i].currentText(),
+			fkval = self.scrolls[i].currentText()
+			fkval = fkval.split('(')[-1].replace(')','')
+			temp = PT.validateNM(i,fkval,
 				self.selectedtable, pkval) 
 			if(temp != None):
 				errorscmb[i]=temp
@@ -420,6 +424,7 @@ class Application(QtWidgets.QMainWindow):
 		text = trim(self.scrolls[self.selectedname].currentText())
 		entry = trim(self.entries[self.selectedname].text())
 		typ = PT.getTypes(self.selectedtable)
+		columns = PT.getTableInfo(self.selectedtable)
 		if(self.sexo != None and self.sexo != True):
 			self.sexo = 'F' if self.sexo == 'Feminino' else 'M'
 			elements = PT.getRegistries(self.selectedtable, 'Sexo', self.sexo)
@@ -427,6 +432,7 @@ class Application(QtWidgets.QMainWindow):
 			elements = PT.getRegistries(self.selectedtable)
 		else:
 			elements = PT.getRegistries(self.selectedtable, text, entry)
+		
 		for i in range(len(elements)):
 			self.stable.insertRow(i)
 			for j in range(len(elements[i])):
@@ -437,7 +443,17 @@ class Application(QtWidgets.QMainWindow):
 				else:
 					if(typ[j] == 'char(1)'):
 						item = 'Feminino' if item == 'F' else 'Masculino'
+					elif(columns[j][2] == 'MUL'):
+						fktbl = PT.getTablebyFK(columns[j][0])
+						pkfromfk = PT.getTablePK(fktbl)
+						print(fktbl,item, columns[j][0])
+						items = PT.selectColumnsInRow(fktbl,PT.getRegistry(fktbl,pkfromfk, item))
+						if(len(items) == 2):
+							item = f'{items[1]}({items[0]})' # nome(pk)
+						else:
+							item = f'{items[0]}'
 					self.stable.setItem(i,j,QtWidgets.QTableWidgetItem(item))
+
 		self.stable.verticalHeader().setDefaultSectionSize(60)
 		self.stable.horizontalHeader().setDefaultSectionSize(120)
 		

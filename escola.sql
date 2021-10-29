@@ -10,58 +10,58 @@ CREATE TABLE Disciplina(Codigo INT NOT NULL, Nome VARCHAR(45) NOT NULL, CargaHor
 CREATE TABLE Responsavel(CPF VARCHAR(15) NOT NULL, NOME VARCHAR(45) NOT NULL, EstadoCivil VARCHAR(30), PRIMARY KEY(CPF));
 
 CREATE TABLE Telefone(Fone VARCHAR(20) NOT NULL, ResponsavelCPF VARCHAR(15) NOT NULL, PRIMARY KEY(Fone),
-				      FOREIGN KEY (ResponsavelCPF) REFERENCES Responsavel(CPF));
+				      FOREIGN KEY (ResponsavelCPF) REFERENCES Responsavel(CPF) ON DELETE CASCADE);
 
 CREATE TABLE Professor(Matricula INT NOT NULL, Nome VARCHAR(45) NOT NULL, Salario FLOAT NOT NULL, DataContratacao DATE NOT NULL, 
 					 DataNascimento DATE NOT NULL, Formacao VARCHAR(45) NOT NULL, FOTO MEDIUMBLOB NOT NULL,
                      DepartamentoCodigo INT NOT NULL, PRIMARY KEY(MATRICULA),
-                     FOREIGN KEY(DepartamentoCodigo) REFERENCES Departamento(Codigo)); -- alo
+                     FOREIGN KEY(DepartamentoCodigo) REFERENCES Departamento(Codigo) ON DELETE CASCADE); -- alo
 
 CREATE TABLE ProfessorDisciplina(ProfessorMatricula INT NOT NULL, DisciplinaCodigo INT NOT NULL,
-								 FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula),
-                                 FOREIGN KEY (DisciplinaCodigo) REFERENCES Disciplina(Codigo));
+								 FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula) ON DELETE CASCADE,
+                                 FOREIGN KEY (DisciplinaCodigo) REFERENCES Disciplina(Codigo) ON DELETE CASCADE);
 
 CREATE TABLE AtividadeExtracurricular(Codigo INT NOT NULL, Descricao VARCHAR(60) NOT NULL, Horario TIME NOT NULL, 
 									  Local_Codigo INT NOT NULL, ProfessorMatricula INT NOT NULL, PRIMARY KEY(Codigo),
-                                      FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo),
-                                      FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula)); -- alo
+                                      FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo) ON DELETE CASCADE,
+                                      FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula) ON DELETE CASCADE); -- alo
 
 CREATE TABLE Turma(Identificacao INT NOT NULL, Turno VARCHAR(45) NOT NULL, Local_Codigo INT NOT NULL,
 				   PRIMARY KEY(Identificacao),
-                   FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo));
+                   FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo) ON DELETE CASCADE);
 
 CREATE TABLE Estudante(Matricula INT NOT NULL, Nome VARCHAR(45) NOT NULL, Sexo CHAR NOT NULL, DataNascimento DATE NOT NULL, 
 					   Mensalidade FLOAT NOT NULL, Foto MEDIUMBLOB NOT NULL, TurmaIdentificacao INT NOT NULL, PRIMARY KEY(Matricula),
-                       FOREIGN KEY (TurmaIdentificacao) REFERENCES Turma(Identificacao)); -- alo
+                       FOREIGN KEY (TurmaIdentificacao) REFERENCES Turma(Identificacao) ON DELETE CASCADE); -- alo
 
 CREATE TABLE EstudanteAtividadeExtracurricular(EstudanteMatricula INT NOT NULL, AtividadeExtracurricularCodigo INT NOT NULL,
-					   FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula),
-                       FOREIGN KEY (AtividadeExtracurricularCodigo) REFERENCES AtividadeExtracurricular(Codigo));
+					   FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula) ON DELETE CASCADE,
+                       FOREIGN KEY (AtividadeExtracurricularCodigo) REFERENCES AtividadeExtracurricular(Codigo) ON DELETE CASCADE);
 
 CREATE TABLE Dependente(Nome VARCHAR(45) NOT NULL, Parentesco VARCHAR(45) NOT NULL, DataNascimento DATE NOT NULL,
 						ProfessorMatricula INT NOT NULL, PRIMARY KEY(Nome),
-                        FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula));
+                        FOREIGN KEY (ProfessorMatricula) REFERENCES Professor(Matricula) ON DELETE CASCADE);
 
 CREATE TABLE Itens(Nome VARCHAR(60) NOT NULL, Quantidade INT NOT NULL, DescricaoAdicional VARCHAR(45), 
 					Ilustracao MEDIUMBLOB, Local_Codigo INT NOT NULL, PRIMARY KEY(Nome),
-                    FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo)); -- Mudar Ilustracao para BLOB?
+                    FOREIGN KEY (Local_Codigo) REFERENCES Local_(Codigo) ON DELETE CASCADE); -- Mudar Ilustracao para BLOB?
 
 CREATE TABLE Despesas(Id INT NOT NULL, Descricao VARCHAR(60) NOT NULL, Valor FLOAT NOT NULL, Data_ DATE NOT NULL, 
 					  DepartamentoCodigo INT NOT NULL, PRIMARY KEY(Id),
-					  FOREIGN KEY (DepartamentoCodigo) REFERENCES Departamento(Codigo));
+					  FOREIGN KEY (DepartamentoCodigo) REFERENCES Departamento(Codigo) ON DELETE CASCADE);
                                 
 CREATE TABLE ProfessorTurma(ProfessorMatricula INT NOT NULL, TurmaIdentificacao INT NOT NULL, 
-							FOREIGN KEY(ProfessorMatricula) REFERENCES Professor(Matricula),
-                            FOREIGN KEY(TurmaIdentificacao) REFERENCES Turma(Identificacao));
+							FOREIGN KEY(ProfessorMatricula) REFERENCES Professor(Matricula) ON DELETE CASCADE,
+                            FOREIGN KEY(TurmaIdentificacao) REFERENCES Turma(Identificacao) ON DELETE CASCADE);
 
 CREATE TABLE ResponsavelEstudante(ResponsavelCPF VARCHAR(15) NOT NULL, EstudanteMatricula INT NOT NULL, 
-								 FOREIGN KEY (ResponsavelCPF) REFERENCES Responsavel(CPF),
-                                 FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula));
+								 FOREIGN KEY (ResponsavelCPF) REFERENCES Responsavel(CPF) ON DELETE CASCADE,
+                                 FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula) ON DELETE CASCADE);
 
 CREATE TABLE Notas(Bimestre INT NOT NULL, Prova FLOAT NOT NULL, Teste FLOAT NOT NULL, 
 					Projeto FLOAT NOT NULL, Atividades FLOAT NOT NULL, EstudanteMatricula INT NOT NULL, 
-                    DisciplinaCodigo INT NOT NULL, FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula),
-                    FOREIGN KEY (DisciplinaCodigo) REFERENCES Disciplina(Codigo));
+                    DisciplinaCodigo INT NOT NULL, FOREIGN KEY (EstudanteMatricula) REFERENCES Estudante(Matricula) ON DELETE CASCADE,
+                    FOREIGN KEY (DisciplinaCodigo) REFERENCES Disciplina(Codigo) ON DELETE CASCADE);
                     
 INSERT INTO Local_ VALUES(1, "Sala", "de aula");
 INSERT INTO Local_ VALUES(3, "Laboratório", "de física");
@@ -93,10 +93,10 @@ INSERT INTO Telefone VALUES("95438-2170", "444.555.666-77");
 INSERT INTO Telefone VALUES("3299-4544", "444.555.666-77");
 INSERT INTO Telefone VALUES("93505-9256", "555.666.777-88");
 
-INSERT INTO Professor VALUES(101, "Jussara Alencar Alves", 2500.00, "2020-07-12", "1980-05-30", "Matemática - Licenciatura", "", 1);
+INSERT INTO Professor VALUES(101, "Jussara Alencar Alves", 2500.00, "2020-07-12", "1980-05-30", "Matemática Licenciatura", "", 1);
 INSERT INTO Professor VALUES(202, "Emerson Nascimento Ferreira", 3000.00, "2008-02-18", "1970-03-01", "Artes Cênicas", "", 3);
-INSERT INTO Professor VALUES(303, "Rodrigo Perreira Santos", 2800.00, "2012-10-24", "1975-11-27", "História - Licenciatura", "", 4);
-INSERT INTO Professor VALUES(404, "Bruno Alves Lima", 2800.00, "2012-04-10", "1982-03-15", "Literatura - Licenciatura", "", 2);
+INSERT INTO Professor VALUES(303, "Rodrigo Perreira Santos", 2800.00, "2012-10-24", "1975-11-27", "História Licenciatura", "", 4);
+INSERT INTO Professor VALUES(404, "Bruno Alves Lima", 2800.00, "2012-04-10", "1982-03-15", "Literatura Licenciatura", "", 2);
 INSERT INTO Professor VALUES(505, "Vanessa Silva Castro", 2500.00, "2021-05-11", "1985-09-20", "Educação Física", "", 4);
 
 INSERT INTO ProfessorDisciplina VALUES(101, 1);
