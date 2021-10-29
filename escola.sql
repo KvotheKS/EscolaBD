@@ -3,7 +3,7 @@ USE ESCOLA;
 
 CREATE TABLE Local_(Codigo INT NOT NULL, Categoria VARCHAR(45) NOT NULL, Descricao VARCHAR(45), PRIMARY KEY(Codigo));
 
-CREATE TABLE Departamento(Codigo INT NOT NULL, Nome VARCHAR(45) NOT NULL, GastoMesPassado FLOAT NOT NULL, PRIMARY KEY(Codigo));
+CREATE TABLE Departamento(Codigo INT NOT NULL, Nome VARCHAR(45) NOT NULL, PRIMARY KEY(Codigo));
 
 CREATE TABLE Disciplina(Codigo INT NOT NULL, Nome VARCHAR(45) NOT NULL, CargaHoraria INT NOT NULL, PRIMARY KEY(Codigo)); 
                         
@@ -69,11 +69,11 @@ INSERT INTO Local_ VALUES(2, "Sala", "de estudo");
 INSERT INTO Local_ VALUES(4, "Auditório", NULL);
 INSERT INTO Local_ VALUES(5, "Quadra", "externa");
 
-INSERT INTO Departamento VALUES(1, "Exatas", 3000.00);
-INSERT INTO Departamento VALUES(5, "Ciências Naturais", 2500.00);
+INSERT INTO Departamento VALUES(1, "Exatas");
+INSERT INTO Departamento VALUES(5, "Ciências Naturais");
 INSERT INTO Departamento VALUES(3, "Artes", 2800.00);
-INSERT INTO Departamento VALUES(4, "Ciências Humanas", 4000.00);
-INSERT INTO Departamento VALUES(2, "Linguagens", 2250.00);
+INSERT INTO Departamento VALUES(4, "Ciências Humanas");
+INSERT INTO Departamento VALUES(2, "Linguagens");
 
 INSERT INTO Disciplina VALUES(1, "Matemática", 220);
 INSERT INTO Disciplina VALUES(2, "Língua Portuguesa", 240);
@@ -142,10 +142,10 @@ INSERT INTO Itens VALUES("Balança", 5, NULL, NULL, 3);
 INSERT INTO Itens VALUES("Quadro", 1, "Negro", NULL, 1);
 
 INSERT INTO Despesas VALUES(11, "Luz", 500.00, "2021-10-29", 1);
-INSERT INTO Despesas VALUES(22, "Manutenção de Laboratórios", 250.00, "2021-10-12", 2);
-INSERT INTO Despesas VALUES(33, "Água", 340.00, "2021-10-29", 1);
-INSERT INTO Despesas VALUES(44, "Obras", 480.00, "2021-10-05", 4);
-INSERT INTO Despesas VALUES(55, "Novos Recursos", 600.00, "2021-10-08", 3);
+INSERT INTO Despesas VALUES(22, "Manutenção de Salas", 250.00, "2021-10-12", 1);
+INSERT INTO Despesas VALUES(33, "Água", 340.00, "2021-09-29", 1);
+INSERT INTO Despesas VALUES(44, "Obras", 480.00, "2021-09-05", 1);
+INSERT INTO Despesas VALUES(55, "Novos Recursos", 600.00, "2021-10-08", 1);
 
 INSERT INTO ProfessorTurma VALUES(101, 1);
 INSERT INTO ProfessorTurma VALUES(202, 2);
