@@ -61,7 +61,6 @@ def UPDATE(table, columns, values, pkval):
 			strcvs += columns[i] + ' = %s,'
 		else:
 			strcvs += columns[i] + f' = {sdw},'
-	#print(f'UPDATE {table} SET {strcvs[:-1]} WHERE {getTablePK(table)} = {pkval}', tuple(vals))
 	dbcur.execute(f'UPDATE {table} SET {strcvs[:-1]} WHERE {getTablePK(table)} = {pkval}', tuple(vals))
 	database.commit()
 

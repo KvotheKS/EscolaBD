@@ -454,7 +454,7 @@ class Application(QtWidgets.QMainWindow):
 							item = f'{items[0]}'
 					self.stable.setItem(i,j,QtWidgets.QTableWidgetItem(item))
 
-		self.stable.verticalHeader().setDefaultSectionSize(60)
+		self.stable.verticalHeader().setDefaultSectionSize(120)
 		self.stable.horizontalHeader().setDefaultSectionSize(120)
 		
 	def loadBLOB(self,data):
@@ -485,7 +485,7 @@ class Application(QtWidgets.QMainWindow):
 	def getPhoto(self):
 		lbl = self.findChild(QtWidgets.QLabel, 'lblFotoImg')
 		file = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
-         'c:\\',"Image files (*.jpg *.gif *.jpeg *.png)")
+         'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads',"Image files (*.jpg *.gif *.jpeg *.png)")
 		self.fotoPath=file[0]
 		pixmap = QPixmap(self.fotoPath)
 		pixmap = pixmap.scaled(lbl.size())
