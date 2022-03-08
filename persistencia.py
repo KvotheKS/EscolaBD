@@ -2,7 +2,7 @@ from mysql.connector import *
 import re
 import datetime
 
-database = connect(host='localhost', user='root', password='Arthur123', database='escola')
+database = connect(host='localhost', user='root', password='', database='escola')
 dbcur = database.cursor(buffered=True)
 
 def SELECTALL(table):
